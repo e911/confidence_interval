@@ -92,42 +92,8 @@ def ci_test(num):
                     hits = hits + 1
                 # print(Xbar-ep, Xbar+ep)
             print(f"{num} alpha: {alpha:.3f} N: {N:5d} frac missed: {1 - hits/10000:.3f}")
+
+
 for i in range(1,11):
-    print(i)
+    print("For function:", i)
     ci_test(i)
-
-def hoeffding_ci_test():
-    for alpha in [0.05, 0.25]:
-        for N in [10, 1000, 10000, 100000]:
-            hits = 0
-            ep = np.sqrt(1 / (2 * N) * np.log(2 / alpha))
-            for reps in range(10000):
-                X = sample_bernoulli(N, 0.5)
-                Xbar = np.mean(X)
-                if np.abs(Xbar - 0.5) <= ep:
-                    hits = hits + 1
-                # print(Xbar-ep, Xbar+ep)
-            print(f"alpha: {alpha:.3f} N: {N:5d} ep: {ep:.3f} frac missed: {1 - hits/10000:.3f}")
-# hoeffding_ci_test()
-
-
-def normal_ci_test():
-    for alpha in [0.05, 0.25]:
-        if alpha == 0.05:
-            ep0 = 1.95996
-        elif alpha == 0.25:
-            ep0 = 1.150349
-        for N in [10, 100, 1000, 100000]:
-            hits = 0
-            mean_ep = 0
-            for reps in range(10000):
-                X = sample_bernoulli(N, 0.5)
-                Xbar = np.mean(X)
-                sig = np.std(X)
-                ep = sig*ep0/np.sqrt(N)
-                mean_ep = mean_ep+ep/10000
-                if np.abs(Xbar - 0.5) <= ep:
-                    hits = hits + 1
-                # print(Xbar-ep, Xbar+ep)
-            print(f"alpha: {alpha:.3f} N: {N:5d} ep: {mean_ep:.3f} frac missed: {1 - hits/10000:.3f}")
-# normal_ci_test()
