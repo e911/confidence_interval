@@ -1,5 +1,7 @@
-import numpy as np
+from random import random
 
+import numpy as np
+from distribution import *
 def ci(X, num):
     nsfndj34234j23ndsfjhbfjh23j3 = len(X)
     QQ8327HUSUH = np.random.rand()
@@ -54,46 +56,59 @@ def ci(X, num):
 
     return a, b
 
-def sample_normal_clipped(N, sig, mu):
-    samples = np.random.randn(N, 1) * sig + mu
-    samples = np.clip(samples, 0, 1)
-    clipped_N = np.sum((samples >= 0) & (samples <= 1))
-    while clipped_N < N:
-        additional_samples = np.random.randn(N - clipped_N, 1) * sig + mu
-        additional_samples = np.clip(additional_samples, 0, 1)
-        samples = np.concatenate((samples, additional_samples), axis=0)
-        clipped_N = np.sum((samples >= 0) & (samples <= 1))
-    return samples[:N]
 
-def sample_bernoulli(N, theta):
-    return np.double(np.random.rand(N, 1) < theta)
-
-def sample_uniform_clipped(N, a, b):
-    samples = a + (b - a) * np.random.rand(N, 1)
-    samples = np.clip(samples, 0, 1)
-    clipped_N = np.sum((samples >= 0) & (samples <= 1))
-    while clipped_N < N:
-        additional_samples = a + (b - a) * np.random.rand(N - clipped_N, 1)
-        additional_samples = np.clip(additional_samples, 0, 1)
-        samples = np.concatenate((samples, additional_samples), axis=0)
-        clipped_N = np.sum((samples >= 0) & (samples <= 1))
-    return samples[:N]
-
-
-def ci_test(num):
-    for alpha in [0.05, 0.25]:
+def bernoulli_ci_test(num):
+    for theta in [0.05, 0.25, 0.5, 0.75, 0.95]:
         for N in [10, 100, 1000, 10000]:
             hits = 0
             for reps in range(10000):
-                X = sample_normal_clipped(N, 1, 0)
+                X = sample_bernoulli(N, theta)
                 a, b = ci(X, num)
-                Xbar = np.mean(X)
-                if a <= Xbar <=b :
-                    hits = hits + 1
-                # print(Xbar-ep, Xbar+ep)
-            print(f"{num} alpha: {alpha:.3f} N: {N:5d} frac missed: {1 - hits/10000:.3f}")
+                Xbar = theta
+                if a <= Xbar:
+                    if Xbar <= b:
+                        hits = hits + 1
+            print(f"{num}  N: {N:5d} frac missed: {1 - hits/10000:.3f}")
+
+
+def uniform_ci_test(num):
+    a_value = [0, 0.25, 0.5, 0.75]
+    b_value = [0.25, 0.5, 0.75, 1]
+    for i in range(10):
+        an = np.random.choice(a_value)
+        bn = np.random.choice([val for val in b_value if val >= an])
+        for N in [10, 100, 1000, 10000]:
+            hits = 0
+            for reps in range(10000):
+                X = sample_uniform(N,an,bn)
+                a, b = ci(X, num)
+                Xbar = (an+bn)/2
+                if a <= Xbar:
+                    if Xbar <= b:
+                        hits = hits + 1
+            print(f"{num} N: {N:5d} frac missed: {1 - hits/10000:.3f}")
+
+
+def triangular_ci_test(num):
+    c = [0.2, 0.4, 0.5,
+         0.6, 0.8]
+    for mode in c:
+        for N in [10, 100, 1000, 10000]:
+            hits = 0
+            for reps in range(10000):
+                X = sample_triangular(N, 0, 1, mode)
+                a, b = ci(X, num)
+                Xbar = (0+1+mode)/3
+                if a <= Xbar:
+                    if Xbar <= b:
+                        hits = hits + 1
+            print(f"{num} N: {N:5d} frac missed: {1 - hits/10000:.3f}")
 
 
 for i in range(1,11):
-    print("For function:", i)
-    ci_test(i)
+    print("Bernoulli for function:", i)
+    bernoulli_ci_test(i)
+    print("Uniform for function:", i)
+    uniform_ci_test(i)
+    print("Triangular for function:", i)
+    triangular_ci_test(i)

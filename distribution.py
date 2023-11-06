@@ -9,4 +9,5 @@ def sample_normal(N, sig, mu):
 def sample_bernoulli(N, theta):
     return np.double(np.random.rand(N, 1) < theta)
 
-
+def sample_triangular(N, a,b,c):
+    return np.random.triangular(a,c,b, N)
