@@ -58,7 +58,7 @@ def ci(X, num):
 
 
 def bernoulli_ci_test(num):
-    for theta in [0.05, 0.2, 0.5, 0.75, 0.9]:
+    for theta in [0.05, 0.1, 0.5, 0.75, 0.9]:
         for N in [10, 100, 1000, 10000]:
             hits = 0
             for reps in range(10000):
@@ -104,7 +104,7 @@ def triangular_ci_test(num):
             print(f"Function: {num} Sample Size: {N:5d} c: {mode}  frac missed: {1 - hits/10000:.3f}")
 
 
-for i in range(1,11):
+for i in range(6,7):
     print("Bernoulli Distribution", i)
     bernoulli_ci_test(i)
     print("Uniform Distribution", i)
