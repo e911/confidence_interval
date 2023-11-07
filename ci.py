@@ -58,7 +58,7 @@ def ci(X, num):
 
 
 def bernoulli_ci_test(num):
-    for theta in [0.05, 0.25, 0.5, 0.75, 0.95]:
+    for theta in [0.05, 0.2, 0.5, 0.75, 0.9]:
         for N in [10, 100, 1000, 10000]:
             hits = 0
             for reps in range(10000):
@@ -68,15 +68,14 @@ def bernoulli_ci_test(num):
                 if a <= Xbar:
                     if Xbar <= b:
                         hits = hits + 1
-            print(f"{num}  N: {N:5d} frac missed: {1 - hits/10000:.3f}")
+            print(f"Function: {num} Sample Size: {N:5d}  theta: {theta} frac missed: {1 - hits/10000:.3f}")
 
 
 def uniform_ci_test(num):
-    a_value = [0, 0.25, 0.5, 0.75]
-    b_value = [0.25, 0.5, 0.75, 1]
-    for i in range(10):
-        an = np.random.choice(a_value)
-        bn = np.random.choice([val for val in b_value if val >= an])
+    an_bn = [[0,1],[0.5,1],[0.25,0.75]]
+    for i in an_bn:
+        an = i[0]
+        bn = i[1]
         for N in [10, 100, 1000, 10000]:
             hits = 0
             for reps in range(10000):
@@ -86,12 +85,12 @@ def uniform_ci_test(num):
                 if a <= Xbar:
                     if Xbar <= b:
                         hits = hits + 1
-            print(f"{num} N: {N:5d} frac missed: {1 - hits/10000:.3f}")
+            print(f"Function: {num} Sample Size: {N:5d} [an, bn]: [{an}, {bn}]  frac missed: {1 - hits/10000:.3f}")
 
 
 def triangular_ci_test(num):
-    c = [0.2, 0.4, 0.5,
-         0.6, 0.8]
+    c = [0.3, 0.5,
+         0.7]
     for mode in c:
         for N in [10, 100, 1000, 10000]:
             hits = 0
@@ -102,13 +101,13 @@ def triangular_ci_test(num):
                 if a <= Xbar:
                     if Xbar <= b:
                         hits = hits + 1
-            print(f"{num} N: {N:5d} frac missed: {1 - hits/10000:.3f}")
+            print(f"Function: {num} Sample Size: {N:5d} c: {mode}  frac missed: {1 - hits/10000:.3f}")
 
 
 for i in range(1,11):
-    print("Bernoulli for function:", i)
+    print("Bernoulli Distribution", i)
     bernoulli_ci_test(i)
-    print("Uniform for function:", i)
+    print("Uniform Distribution", i)
     uniform_ci_test(i)
-    print("Triangular for function:", i)
+    print("Triangular Distribution", i)
     triangular_ci_test(i)
